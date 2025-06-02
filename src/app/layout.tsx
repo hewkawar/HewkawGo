@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
-import { Theme } from "@radix-ui/themes";
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 
@@ -18,9 +17,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body style={{ ...notoSansThai.style }}>
-        <Theme accentColor="violet" radius="full" appearance="dark">
+        <div data-is-root-theme="true" data-accent-color="violet" data-gray-color="mauve" data-has-background="true" data-panel-background="translucent" data-radius="full" data-scaling="100%" className="radix-themes dark">
           {children}
-        </Theme>
+        </div>
       </body>
     </html>
   );
