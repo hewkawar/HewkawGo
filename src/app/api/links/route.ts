@@ -18,6 +18,13 @@ export async function POST(req: NextRequest) {
 
     newUrl = newUrl.replace(/[^a-zA-Z0-9-_]/g, "");
 
+    if (newUrl.startsWith("panel") || newUrl.startsWith("admin") || newUrl.startsWith("dashboard")) {
+        return NextResponse.json({
+            ok: false,
+            error: "Invalid URL prefix"
+        }, { status: 400 });
+    }
+
     const db = await getDB();
 
     await initializeTable(db);
