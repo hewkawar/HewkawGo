@@ -2,10 +2,11 @@
 
 import { copyToClipboard } from "@/functions/clipboard";
 import { LinkRow, Site } from "@/types/interface";
-import { Button, Flex, Table } from "@radix-ui/themes";
+import { AlertDialog, Button, Flex, Table, Text } from "@radix-ui/themes";
 import { CopyIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function PanelClientPage({ site }: { site: Site }) {
     const [links, setLinks] = useState<LinkRow[]>([]);
@@ -17,6 +18,21 @@ export default function PanelClientPage({ site }: { site: Site }) {
         }
         const data = await res.json();
         setLinks(data);
+    }
+
+    async function deleteLink(name: string) {
+        toast.promise(fetch(`/api/links/${name}`, {
+            method: "DELETE",
+        }), {
+            loading: "กำลังลบลิ้งค์...",
+            success: () => {
+                fetchLinks();
+                return "ลิ้งค์ถูกลบเรียบร้อยแล้ว";
+            },
+            error: (err) => {
+                return err.error || "เกิดข้อผิดพลาดในการลบลิ้งค์";
+            }
+        })
     }
 
     useEffect(() => {
@@ -55,7 +71,29 @@ export default function PanelClientPage({ site }: { site: Site }) {
                                         <Table.Cell>{new Date(link.created_at).toLocaleString("th", { dateStyle: "medium", timeStyle: "short" })}</Table.Cell>
                                         <Table.Cell>
                                             <Flex>
-                                                <Button color="red" variant="soft"><Trash2Icon size={16} /></Button>
+                                                <AlertDialog.Root>
+                                                    <AlertDialog.Trigger>
+                                                        <Button color="red" variant="soft"><Trash2Icon size={16} /></Button>
+                                                    </AlertDialog.Trigger>
+                                                    <AlertDialog.Content maxWidth="450px">
+                                                        <AlertDialog.Title>ลบลิ้งค์ย่อ?</AlertDialog.Title>
+                                                        <AlertDialog.Description size="2">
+                                                            <Flex direction="column">
+                                                                <Text>คุณแน่ใจหรือไม่ว่าต้องการลบลิ้งค์ <strong>{link.name}</strong>?</Text>
+                                                                <Text>การดำเนินการนี้จะไม่สามารถกู้คืนได้</Text>
+                                                            </Flex>
+                                                        </AlertDialog.Description>
+
+                                                        <Flex gap="3" mt="4" justify="end">
+                                                            <AlertDialog.Cancel>
+                                                                <Button variant="soft" color="gray">ยกเลิก</Button>
+                                                            </AlertDialog.Cancel>
+                                                            <AlertDialog.Action>
+                                                                <Button variant="solid" color="red" onClick={() => deleteLink(link.url)}>ยืนยันการลบ</Button>
+                                                            </AlertDialog.Action>
+                                                        </Flex>
+                                                    </AlertDialog.Content>
+                                                </AlertDialog.Root>
                                             </Flex>
                                         </Table.Cell>
                                     </Table.Row>
