@@ -57,7 +57,7 @@ export default function PanelClientPage({ site }: { site: Site }) {
     }, []);
 
     return (
-        <div className="container">
+        <>
             <div className="flex justify-end my-4 gap-2">
                 <AddLink trigger={(<Button color='green' variant='soft'><PlusIcon size={16} /> ย่อลิ้งค์</Button>)} site={site} onSuccess={fetchLinks} />
             </div>
@@ -161,6 +161,6 @@ export default function PanelClientPage({ site }: { site: Site }) {
                     )
                 }
             </div>
-        </div>
+        </>
     )
 }
