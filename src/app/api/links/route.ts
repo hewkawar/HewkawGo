@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
         }, { status: 400 });
     }
 
-    let newUrl = url ? url : generateRandomString(6);
+    let newUrl: string = url ? url : generateRandomString(6);
+
+    newUrl = newUrl.replace(/[^a-zA-Z0-9-_]/g, "");
 
     const db = await getDB();
 
