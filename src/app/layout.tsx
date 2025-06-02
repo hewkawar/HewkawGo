@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
-      <body style={{ ...notoSansThai.style }}>
-        <div data-is-root-theme="true" data-accent-color="violet" data-gray-color="mauve" data-has-background="true" data-panel-background="translucent" data-radius="full" data-scaling="100%" className="radix-themes dark">
+      <body>
+        <div data-is-root-theme="true" data-accent-color="violet" data-gray-color="mauve" data-has-background="true" data-panel-background="translucent" data-radius="full" data-scaling="100%" className="radix-themes dark flex flex-col items-center" style={{ ...notoSansThai.style }}>
           {children}
         </div>
       </body>
