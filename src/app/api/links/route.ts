@@ -1,13 +1,26 @@
+import { authOptions } from "@/configs/authOption.config";
 import { generateRandomString } from "@/functions/string";
 import { getDB, initializeTable } from "@/libs/db";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+        return NextResponse.json({
+            ok: false,
+            error: "Unauthorized"
+        }, { status: 401 });
+    }
+
+    const owner = session.user.id;
+
     const body = await req.text();
 
-    const { name, url, target, owner } = JSON.parse(body || "{}");
+    const { name, url, target } = JSON.parse(body || "{}");
 
-    if (!name || !target || !owner) {
+    if (!name || !target) {
         return NextResponse.json({
             ok: false,
             error: "Missing required fields"
