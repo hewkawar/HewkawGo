@@ -2,15 +2,31 @@
 
 import AddLink from "@/components/AddLink";
 import { copyToClipboard } from "@/functions/clipboard";
+import { generateQRCode } from "@/functions/qrcode";
 import { LinkRow, Site } from "@/types/interface";
-import { AlertDialog, Button, Flex, Table } from "@radix-ui/themes";
-import { CopyIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { AlertDialog, Button, Dialog, Flex, Table } from "@radix-ui/themes";
+import { ArrowDownToLineIcon, CopyIcon, PlusIcon, QrCodeIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
+import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function PanelClientPage({ site }: { site: Site }) {
     const [links, setLinks] = useState<LinkRow[]>([]);
+
+    async function downloadQRCode(url: string) {
+        const data = await generateQRCode({ data: `${site.url}/${url}`, size: 256 });
+
+        const res = await fetch(data);
+        const blob = await res.blob();
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${url}.png`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        toast.success("ดาวน์โหลด QR Code สำเร็จ");
+    }
 
     async function fetchLinks() {
         const res = await fetch("/api/links");
@@ -75,7 +91,39 @@ export default function PanelClientPage({ site }: { site: Site }) {
                                             <Table.Cell>{link.target}</Table.Cell>
                                             <Table.Cell>{new Date(link.created_at).toLocaleString("th", { dateStyle: "medium", timeStyle: "short" })}</Table.Cell>
                                             <Table.Cell>
-                                                <Flex>
+                                                <Flex gap="2">
+                                                    <Dialog.Root>
+                                                        <Dialog.Trigger>
+                                                            <Button color="blue" variant="soft"><QrCodeIcon size={16} /></Button>
+                                                        </Dialog.Trigger>
+
+                                                        <Dialog.Content maxWidth="450px">
+                                                            <Dialog.Title>QR Code</Dialog.Title>
+
+                                                            <Flex direction="column" gap="6" align="center">
+                                                                <QRCodeSVG
+                                                                    value={`${site.url}/${link.url}`}
+                                                                    size={128}
+                                                                    bgColor='#fff'
+                                                                    fgColor='#000'
+                                                                    level="Q"
+                                                                    includeMargin={true}
+                                                                />
+
+                                                                <Button variant="ghost" color="blue" onClick={() => downloadQRCode(`${site.url}/${link.url}`)}>
+                                                                    <ArrowDownToLineIcon size={16} />
+                                                                    ดาวน์โหลด QR Code
+                                                                </Button>
+                                                            </Flex>
+
+                                                            <Flex gap="3" mt="4" justify="end">
+                                                                <Dialog.Close>
+                                                                    <Button variant="soft" color="gray">ปิด</Button>
+                                                                </Dialog.Close>
+                                                            </Flex>
+                                                        </Dialog.Content>
+                                                    </Dialog.Root>
+
                                                     <AlertDialog.Root>
                                                         <AlertDialog.Trigger>
                                                             <Button color="red" variant="soft"><Trash2Icon size={16} /></Button>
