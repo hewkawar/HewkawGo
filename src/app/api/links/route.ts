@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     await initializeTable(db);
 
     const now = Date.now();
-    
+
     const existingLink = await db.prepare("SELECT id FROM links WHERE url = ?").bind(newUrl).first();
 
     if (existingLink) {
