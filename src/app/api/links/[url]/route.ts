@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ url:
 
     await initializeTable(db);
 
-    const total = await db.query("SELECT * FROM links WHERE url = $1", [url]);
+    const total = await db.query("SELECT id, name, url, target, created_at, updated_at FROM links WHERE url = $1", [url]);
 
     if (total.length === 0) {
         return NextResponse.json({
@@ -23,8 +23,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ url:
         }, { status: 404 });
     }
 
-    return NextResponse.json({
-        ok: true,
-        data: total[0]
-    });
+    return NextResponse.json(total[0]);
 }

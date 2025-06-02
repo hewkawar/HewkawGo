@@ -4,6 +4,26 @@ import { getDB, initializeTable } from "@/libs/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET() {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+        return NextResponse.json({
+            ok: false,
+            error: "Unauthorized"
+        }, { status: 401 });
+    }
+
+    const db = await getDB();
+    await initializeTable(db);
+
+    const owner = session.user.id;
+
+    const links = await db.query("SELECT id, name, url, target, created_at, updated_at FROM links WHERE owner = $1", [owner]);
+    
+    return NextResponse.json(links);
+}
+
 export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
