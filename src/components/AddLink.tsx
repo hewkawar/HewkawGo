@@ -6,8 +6,33 @@ import { PinIcon, ShuffleIcon } from "lucide-react";
 import { useState } from "react";
 
 export default function AddLink({ trigger, site }: { trigger: React.ReactNode; site: Site; }) {
-    const [customLink, setCustomLink] = useState("");
+    const [url, setUrl] = useState("");
+    const [name, setName] = useState("ลิ้งค์ใหม่");
+
     const [linkType, setLinkType] = useState<"random" | "custom">("random");
+    const [customLink, setCustomLink] = useState("");
+
+    async function addLink() {
+        await fetch("/api/links", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                url: linkType === "custom" ? customLink : undefined,
+                target: url
+            }),
+        }).then(async (res) => {
+            const data = await res.json();
+
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                alert(data.error ? data.error : "เกิดข้อผิดพลาดในการสร้างลิ้งค์");
+            }
+        })
+    }
 
     return (
         <Dialog.Root>
@@ -25,15 +50,18 @@ export default function AddLink({ trigger, site }: { trigger: React.ReactNode; s
                             placeholder="URL ที่ต้องการ"
                             type="url"
                             required
+                            onChange={(e) => setUrl(e.target.value)}
+                            defaultValue={url}
                         />
                     </label>
                     <label>
                         <Text as="div" size="2" mb="1" weight="bold">ชื่อลิ้งค์</Text>
                         <TextField.Root
-                            defaultValue="ลิ้งค์ใหม่"
+                            defaultValue={name}
                             placeholder="ชื่อลิ้งค์"
                             type="text"
                             required
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </label>
 
@@ -81,7 +109,7 @@ export default function AddLink({ trigger, site }: { trigger: React.ReactNode; s
                     <Dialog.Close>
                         <Button variant="soft" color="gray">ยกเลิก</Button>
                     </Dialog.Close>
-                    <Button color="green">สร้าง</Button>
+                    <Button color="green" onClick={addLink}>สร้าง</Button>
                 </Flex>
             </Dialog.Content>
         </Dialog.Root>
