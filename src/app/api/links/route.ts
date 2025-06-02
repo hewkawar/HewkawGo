@@ -2,6 +2,8 @@ import { generateRandomString } from "@/functions/string";
 import { getDB, initializeTable } from "@/libs/db";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function POST(req: NextRequest) {
     const body = await req.text();
 

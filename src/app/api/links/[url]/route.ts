@@ -1,6 +1,8 @@
 import { getDB, initializeTable } from "@/libs/db";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ url: string }> }) {
     const db = await getDB();
     const { url } = await params;
