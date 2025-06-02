@@ -4,6 +4,7 @@ import { Site } from "@/types/interface";
 import { Box, Button, Dialog, Flex, RadioCards, Text, TextField } from "@radix-ui/themes";
 import { PinIcon, ShuffleIcon } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AddLink({ trigger, site }: { trigger: React.ReactNode; site: Site; }) {
     const [url, setUrl] = useState("");
@@ -13,7 +14,7 @@ export default function AddLink({ trigger, site }: { trigger: React.ReactNode; s
     const [customLink, setCustomLink] = useState("");
 
     async function addLink() {
-        await fetch("/api/links", {
+        await toast.promise(fetch("/api/links", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -23,15 +24,25 @@ export default function AddLink({ trigger, site }: { trigger: React.ReactNode; s
                 url: linkType === "custom" ? customLink : undefined,
                 target: url
             }),
-        }).then(async (res) => {
-            const data = await res.json();
-
-            if (res.ok) {
-                window.location.reload();
-            } else {
-                alert(data.error ? data.error : "เกิดข้อผิดพลาดในการสร้างลิ้งค์");
+        }).then((res) => {
+            if (!res.ok) {
+                return res.json().then((data) => {
+                    throw new Error(data.error || "เกิดข้อผิดพลาดในการสร้างลิ้งค์");
+                });
             }
-        })
+            return res;
+        }), {
+            loading: "กำลังสร้างลิ้งค์...",
+            success: "สร้างลิ้งค์เรียบร้อยแล้ว",
+            error: (err) => {
+                return err.error || "เกิดข้อผิดพลาดในการสร้างลิ้งค์";
+            }
+        });
+
+        setUrl("");
+        setName("ลิ้งค์ใหม่");
+        setLinkType("random");
+        setCustomLink("");
     }
 
     return (
@@ -109,7 +120,9 @@ export default function AddLink({ trigger, site }: { trigger: React.ReactNode; s
                     <Dialog.Close>
                         <Button variant="soft" color="gray">ยกเลิก</Button>
                     </Dialog.Close>
-                    <Button color="green" onClick={addLink}>สร้าง</Button>
+                    <Dialog.Close>
+                        <Button color="green" onClick={addLink}>สร้าง</Button>
+                    </Dialog.Close>
                 </Flex>
             </Dialog.Content>
         </Dialog.Root>

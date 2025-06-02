@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
+import { Toaster } from "react-hot-toast";
 
 const notoSansThai = Noto_Sans_Thai({
   subsets: ["thai"],
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <Toaster position="top-center" />
         <SessionWrapper>
           <Theme accentColor="iris" radius="large" appearance="dark" style={notoSansThai.style} className="flex flex-col items-center">
             <main className="h-screen p-16 flex flex-col items-center justify-center">
