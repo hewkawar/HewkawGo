@@ -26,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Toaster position="top-center" />
         <SessionWrapper>
           <Theme accentColor="iris" radius="large" appearance="dark" style={notoSansThai.style} className="flex flex-col items-center">
-            <main className="h-screen p-16 flex flex-col items-center justify-center">
+            <main className="h-screen p-16 flex flex-col items-center">
               {children}
             </main>
             <Footer />
