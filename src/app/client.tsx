@@ -1,6 +1,6 @@
 "use client";
 import { Site } from '@/types/interface';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { TypeAnimation } from 'react-type-animation'
 import Image from 'next/image';
 
@@ -31,8 +31,8 @@ export default function HomeClientPage({ site }: { site: Site }) {
                 session.status == 'authenticated' ? (
                     <div className='mt-6 flex gap-2'>
                         <Button color='green' variant='soft'><PlusIcon size={16} /> ย่อลิ้งค์</Button>
-                        <Button color='blue' variant='soft'><ListIcon size={16} /> แก้ไขลิ้งค์ของฉัน</Button>
-                        <Button color='red' variant='soft'><LogOutIcon size={16} /> ออกจากระบบ</Button>
+                        <Button color='blue' variant='soft' onClick={() => router.push("/panel")}><ListIcon size={16} /> แก้ไขลิ้งค์ของฉัน</Button>
+                        <Button color='red' variant='soft' onClick={() => signOut()}><LogOutIcon size={16} /> ออกจากระบบ</Button>
                     </div>
                 ) : (
                     <div className='mt-6'>
