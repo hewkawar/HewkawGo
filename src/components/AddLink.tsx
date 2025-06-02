@@ -6,7 +6,7 @@ import { PinIcon, ShuffleIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function AddLink({ trigger, site }: { trigger: React.ReactNode; site: Site; }) {
+export default function AddLink({ trigger, site, onSuccess }: { trigger: React.ReactNode; site: Site; onSuccess?: () => void }) {
     const [url, setUrl] = useState("");
     const [name, setName] = useState("ลิ้งค์ใหม่");
 
@@ -43,6 +43,10 @@ export default function AddLink({ trigger, site }: { trigger: React.ReactNode; s
         setName("ลิ้งค์ใหม่");
         setLinkType("random");
         setCustomLink("");
+
+        if (onSuccess) {
+            onSuccess();
+        }
     }
 
     return (

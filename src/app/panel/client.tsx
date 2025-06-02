@@ -1,9 +1,10 @@
 "use client";
 
+import AddLink from "@/components/AddLink";
 import { copyToClipboard } from "@/functions/clipboard";
 import { LinkRow, Site } from "@/types/interface";
 import { AlertDialog, Button, Flex, Table } from "@radix-ui/themes";
-import { CopyIcon, Trash2Icon } from "lucide-react";
+import { CopyIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -40,73 +41,78 @@ export default function PanelClientPage({ site }: { site: Site }) {
     }, []);
 
     return (
-        <div>
-            {
-                links.length > 0 ? (
-                    <Table.Root>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.ColumnHeaderCell>#</Table.ColumnHeaderCell>
-                                <Table.ColumnHeaderCell>ชื่อ</Table.ColumnHeaderCell>
-                                <Table.ColumnHeaderCell>ลิ้งค์</Table.ColumnHeaderCell>
-                                <Table.ColumnHeaderCell>ปลายทาง</Table.ColumnHeaderCell>
-                                <Table.ColumnHeaderCell>สร้างเมื่อ</Table.ColumnHeaderCell>
-                                <Table.ColumnHeaderCell>ดำเนินการ</Table.ColumnHeaderCell>
-                            </Table.Row>
-                        </Table.Header>
+        <div className="container">
+            <div className="flex justify-end my-4 gap-2">
+                <AddLink trigger={(<Button color='green' variant='soft'><PlusIcon size={16} /> ย่อลิ้งค์</Button>)} site={site} onSuccess={fetchLinks} />
+            </div>
+            <div>
+                {
+                    links.length > 0 ? (
+                        <Table.Root>
+                            <Table.Header>
+                                <Table.Row>
+                                    <Table.ColumnHeaderCell>#</Table.ColumnHeaderCell>
+                                    <Table.ColumnHeaderCell>ชื่อ</Table.ColumnHeaderCell>
+                                    <Table.ColumnHeaderCell>ลิ้งค์</Table.ColumnHeaderCell>
+                                    <Table.ColumnHeaderCell>ปลายทาง</Table.ColumnHeaderCell>
+                                    <Table.ColumnHeaderCell>สร้างเมื่อ</Table.ColumnHeaderCell>
+                                    <Table.ColumnHeaderCell>ดำเนินการ</Table.ColumnHeaderCell>
+                                </Table.Row>
+                            </Table.Header>
 
-                        <Table.Body>
-                            {
-                                links.map((link) => (
-                                    <Table.Row key={link.id}>
-                                        <Table.RowHeaderCell>{link.id}</Table.RowHeaderCell>
-                                        <Table.Cell>{link.name}</Table.Cell>
-                                        <Table.Cell>
-                                            <Flex gap="2">
-                                                <Link href={`${site.url}/${link.url}`} className="text-blue-400 hover:underline transition-colors" target="_blank">{site.url}/{link.url}</Link>
-                                                <button onClick={() => copyToClipboard(`${site.url}/${link.url}`)} className="cursor-pointer hover:bg-white/20 p-1.5 rounded-full transition-colors"><CopyIcon size={12} /></button>
-                                            </Flex>
-                                        </Table.Cell>
-                                        <Table.Cell>{link.target}</Table.Cell>
-                                        <Table.Cell>{new Date(link.created_at).toLocaleString("th", { dateStyle: "medium", timeStyle: "short" })}</Table.Cell>
-                                        <Table.Cell>
-                                            <Flex>
-                                                <AlertDialog.Root>
-                                                    <AlertDialog.Trigger>
-                                                        <Button color="red" variant="soft"><Trash2Icon size={16} /></Button>
-                                                    </AlertDialog.Trigger>
-                                                    <AlertDialog.Content maxWidth="450px">
-                                                        <AlertDialog.Title>ลบลิ้งค์ย่อ?</AlertDialog.Title>
-                                                        <AlertDialog.Description size="2">
+                            <Table.Body>
+                                {
+                                    links.map((link) => (
+                                        <Table.Row key={link.id}>
+                                            <Table.RowHeaderCell>{link.id}</Table.RowHeaderCell>
+                                            <Table.Cell>{link.name}</Table.Cell>
+                                            <Table.Cell>
+                                                <Flex gap="2">
+                                                    <Link href={`${site.url}/${link.url}`} className="text-blue-400 hover:underline transition-colors" target="_blank">{site.url}/{link.url}</Link>
+                                                    <button onClick={() => copyToClipboard(`${site.url}/${link.url}`)} className="cursor-pointer hover:bg-white/20 p-1.5 rounded-full transition-colors"><CopyIcon size={12} /></button>
+                                                </Flex>
+                                            </Table.Cell>
+                                            <Table.Cell>{link.target}</Table.Cell>
+                                            <Table.Cell>{new Date(link.created_at).toLocaleString("th", { dateStyle: "medium", timeStyle: "short" })}</Table.Cell>
+                                            <Table.Cell>
+                                                <Flex>
+                                                    <AlertDialog.Root>
+                                                        <AlertDialog.Trigger>
+                                                            <Button color="red" variant="soft"><Trash2Icon size={16} /></Button>
+                                                        </AlertDialog.Trigger>
+                                                        <AlertDialog.Content maxWidth="450px">
+                                                            <AlertDialog.Title>ลบลิ้งค์ย่อ?</AlertDialog.Title>
+                                                            <AlertDialog.Description size="2">
                                                                 คุณแน่ใจหรือไม่ว่าต้องการลบลิ้งค์ <strong>{link.name}</strong>?
                                                                 <br />
                                                                 การดำเนินการนี้จะไม่สามารถกู้คืนได้
-                                                        </AlertDialog.Description>
+                                                            </AlertDialog.Description>
 
-                                                        <Flex gap="3" mt="4" justify="end">
-                                                            <AlertDialog.Cancel>
-                                                                <Button variant="soft" color="gray">ยกเลิก</Button>
-                                                            </AlertDialog.Cancel>
-                                                            <AlertDialog.Action>
-                                                                <Button variant="solid" color="red" onClick={() => deleteLink(link.url)}>ยืนยันการลบ</Button>
-                                                            </AlertDialog.Action>
-                                                        </Flex>
-                                                    </AlertDialog.Content>
-                                                </AlertDialog.Root>
-                                            </Flex>
-                                        </Table.Cell>
-                                    </Table.Row>
-                                ))
-                            }
-                        </Table.Body>
-                    </Table.Root>
-                ) : (
-                    <>
-                        <p className="text-center text-gray-500 mt-6">ยังไม่มีลิ้งค์ย่อ</p>
-                        <p className="text-center text-gray-500">เริ่มต้นสร้างลิ้งค์ย่อได้เลย!</p>
-                    </>
-                )
-            }
+                                                            <Flex gap="3" mt="4" justify="end">
+                                                                <AlertDialog.Cancel>
+                                                                    <Button variant="soft" color="gray">ยกเลิก</Button>
+                                                                </AlertDialog.Cancel>
+                                                                <AlertDialog.Action>
+                                                                    <Button variant="solid" color="red" onClick={() => deleteLink(link.url)}>ยืนยันการลบ</Button>
+                                                                </AlertDialog.Action>
+                                                            </Flex>
+                                                        </AlertDialog.Content>
+                                                    </AlertDialog.Root>
+                                                </Flex>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    ))
+                                }
+                            </Table.Body>
+                        </Table.Root>
+                    ) : (
+                        <>
+                            <p className="text-center text-gray-500 mt-6">ยังไม่มีลิ้งค์ย่อ</p>
+                            <p className="text-center text-gray-500">เริ่มต้นสร้างลิ้งค์ย่อได้เลย!</p>
+                        </>
+                    )
+                }
+            </div>
         </div>
     )
 }
