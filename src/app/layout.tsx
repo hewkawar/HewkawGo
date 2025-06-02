@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
+import { Theme } from "@radix-ui/themes";
 
 import SessionWrapper from "@/components/SessionWrapper";
 import Footer from "@/components/Footer";
@@ -22,10 +23,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <SessionWrapper>
-          <div data-is-root-theme="true" data-accent-color="violet" data-gray-color="mauve" data-has-background="true" data-panel-background="translucent" data-radius="large" data-scaling="100%" className="radix-themes dark flex flex-col items-center" style={{ ...notoSansThai.style }}>
-            {children}
+          <Theme accentColor="iris" radius="large" appearance="dark" style={notoSansThai.style} className="flex flex-col items-center">
+            <main className="h-screen p-16 flex flex-col items-center justify-center">
+              {children}
+            </main>
             <Footer />
-          </div>
+          </Theme>
         </SessionWrapper>
       </body>
     </html>

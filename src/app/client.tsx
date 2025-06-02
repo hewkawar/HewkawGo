@@ -3,11 +3,12 @@ import { Site } from '@/types/interface';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { TypeAnimation } from 'react-type-animation'
 import Image from 'next/image';
-
-import DiscordSymbol from '@/assets/Discord-Symbol-Blurple.svg';
+import AddLink from '@/components/AddLink';
 import { Button } from '@radix-ui/themes';
 import { ListIcon, LogOutIcon, PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+import DiscordSymbol from '@/assets/Discord-Symbol-Blurple.svg';
 
 export default function HomeClientPage({ site }: { site: Site }) {
     const session = useSession();
@@ -30,7 +31,7 @@ export default function HomeClientPage({ site }: { site: Site }) {
             {
                 session.status == 'authenticated' ? (
                     <div className='mt-6 flex gap-2'>
-                        <Button color='green' variant='soft'><PlusIcon size={16} /> ย่อลิ้งค์</Button>
+                        <AddLink trigger={(<Button color='green' variant='soft'><PlusIcon size={16} /> ย่อลิ้งค์</Button>)} site={site} />
                         <Button color='blue' variant='soft' onClick={() => router.push("/panel")}><ListIcon size={16} /> แก้ไขลิ้งค์ของฉัน</Button>
                         <Button color='red' variant='soft' onClick={() => signOut()}><LogOutIcon size={16} /> ออกจากระบบ</Button>
                     </div>
