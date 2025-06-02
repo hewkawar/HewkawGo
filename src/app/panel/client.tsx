@@ -101,7 +101,10 @@ export default function PanelClientPage({ site }: { site: Site }) {
                         </Table.Body>
                     </Table.Root>
                 ) : (
-                    <></>
+                    <>
+                        <p className="text-center text-gray-500 mt-6">ยังไม่มีลิ้งค์ย่อ</p>
+                        <p className="text-center text-gray-500">เริ่มต้นสร้างลิ้งค์ย่อได้เลย!</p>
+                    </>
                 )
             }
         </div>
