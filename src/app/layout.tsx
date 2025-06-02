@@ -22,7 +22,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <SessionWrapper>
-          <div data-is-root-theme="true" data-accent-color="violet" data-gray-color="mauve" data-has-background="true" data-panel-background="translucent" data-radius="full" data-scaling="100%" className="radix-themes dark flex flex-col items-center" style={{ ...notoSansThai.style }}>
+          <div data-is-root-theme="true" data-accent-color="violet" data-gray-color="mauve" data-has-background="true" data-panel-background="translucent" data-radius="large" data-scaling="100%" className="radix-themes dark flex flex-col items-center" style={{ ...notoSansThai.style }}>
             {children}
             <Footer />
           </div>
