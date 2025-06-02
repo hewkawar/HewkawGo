@@ -2,7 +2,7 @@
 
 import { copyToClipboard } from "@/functions/clipboard";
 import { LinkRow, Site } from "@/types/interface";
-import { AlertDialog, Button, Flex, Table, Text } from "@radix-ui/themes";
+import { AlertDialog, Button, Flex, Table } from "@radix-ui/themes";
 import { CopyIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -78,10 +78,9 @@ export default function PanelClientPage({ site }: { site: Site }) {
                                                     <AlertDialog.Content maxWidth="450px">
                                                         <AlertDialog.Title>ลบลิ้งค์ย่อ?</AlertDialog.Title>
                                                         <AlertDialog.Description size="2">
-                                                            <Flex direction="column">
-                                                                <Text>คุณแน่ใจหรือไม่ว่าต้องการลบลิ้งค์ <strong>{link.name}</strong>?</Text>
-                                                                <Text>การดำเนินการนี้จะไม่สามารถกู้คืนได้</Text>
-                                                            </Flex>
+                                                                คุณแน่ใจหรือไม่ว่าต้องการลบลิ้งค์ <strong>{link.name}</strong>?
+                                                                <br />
+                                                                การดำเนินการนี้จะไม่สามารถกู้คืนได้
                                                         </AlertDialog.Description>
 
                                                         <Flex gap="3" mt="4" justify="end">
