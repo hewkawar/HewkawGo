@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
+
+import Footer from "@/components/Footer";
+
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
-import Footer from "@/components/Footer";
 
 const notoSansThai = Noto_Sans_Thai({
   subsets: ["thai"],
