@@ -110,7 +110,7 @@ export default function PanelClientPage({ site }: { site: Site }) {
                                                                     includeMargin={true}
                                                                 />
 
-                                                                <Button variant="ghost" color="blue" onClick={() => downloadQRCode(`${site.url}/${link.url}`)}>
+                                                                <Button variant="ghost" color="blue" onClick={() => downloadQRCode(link.url)}>
                                                                     <ArrowDownToLineIcon size={16} />
                                                                     ดาวน์โหลด QR Code
                                                                 </Button>
