@@ -2,8 +2,6 @@ import { generateRandomString } from "@/functions/string";
 import { getDB, initializeTable } from "@/libs/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 export async function POST(req: NextRequest) {
     const body = await req.text();
 
@@ -31,24 +29,24 @@ export async function POST(req: NextRequest) {
 
     await initializeTable(db);
 
-    const now = Date.now();
+    const existingLink = await db.query("SELECT id FROM links WHERE url = $1", [newUrl]);
 
-    const existingLink = await db.prepare("SELECT id FROM links WHERE url = ?").bind(newUrl).first();
-
-    if (existingLink) {
-        newUrl = generateRandomString(6);
-        const checkAgain = await db.prepare("SELECT id FROM links WHERE url = ?").bind(newUrl).first();
-        if (checkAgain) {
-            generateRandomString(6);
-        }
+    if (existingLink.length > 0) {
+        return NextResponse.json({
+            ok: false,
+            error: "Link with this URL already exists"
+        }, { status: 400 });
     }
 
-    await db.prepare("INSERT INTO links (name, url, target, owner, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)")
-        .bind(name, newUrl, target, owner, now, now)
-        .run();
+    await db.query("INSERT INTO links (name, url, target, owner) VALUES ($1, $2, $3, $4)", [name, newUrl, target, owner]);
 
     return NextResponse.json({
         ok: true,
         message: "Link created successfully",
+        data: {
+            name,
+            url: newUrl,
+            target,
+        }
     });
 }

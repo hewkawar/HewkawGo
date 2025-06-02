@@ -1,19 +1,17 @@
 import { getDB, initializeTable } from "@/libs/db";
 import { NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 export async function GET() {
     const db = await getDB();
 
     await initializeTable(db);
 
-    const total = await db.prepare("SELECT id FROM links").all();
+    const total = await db.query("SELECT id FROM links");
 
     return NextResponse.json({
         ok: true,
         static: {
-            total: total.results.length,
+            total: total.length,
         }
     });
 }

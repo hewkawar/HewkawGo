@@ -1,8 +1,6 @@
 import { getDB, initializeTable } from "@/libs/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 export async function GET(req: NextRequest, { params }: { params: Promise<{ url: string }> }) {
     const db = await getDB();
     const { url } = await params;
@@ -16,9 +14,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ url:
 
     await initializeTable(db);
 
-    const total = await db.prepare("SELECT * FROM links WHERE url = ?").bind(url).first();
+    const total = await db.query("SELECT * FROM links WHERE url = $1", [url]);
 
-    if (!total) {
+    if (total.length === 0) {
         return NextResponse.json({
             ok: false,
             error: "Link not found"
@@ -27,6 +25,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ url:
 
     return NextResponse.json({
         ok: true,
-        data: total
+        data: total[0]
     });
 }
